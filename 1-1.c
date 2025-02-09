@@ -1,5 +1,5 @@
-#include "stdio.h"
-#include "pthread.h"
+#include <stdio.h>
+#include <pthread.h>
 
 void *thread1() {
   printf("Hello, World! from thread #1\n");
