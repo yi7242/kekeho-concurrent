@@ -16,18 +16,14 @@ void *thread1()
 }
 int main(void)
 {
-    pthread_t pthread1, pthread2, pthread3, pthread4, pthread5;
-    pthread_create(&pthread1, NULL, &thread1, NULL);
-    pthread_create(&pthread2, NULL, &thread1, NULL);
-    pthread_create(&pthread3, NULL, &thread1, NULL);
-    pthread_create(&pthread4, NULL, &thread1, NULL);
-    pthread_create(&pthread5, NULL, &thread1, NULL);
-
-    pthread_join(pthread1, NULL);
-    pthread_join(pthread2, NULL);
-    pthread_join(pthread3, NULL);
-    pthread_join(pthread4, NULL);
-    pthread_join(pthread5, NULL);
+    const int num_threads = 5;
+    pthread_t threads[num_threads];
+    for (int i = 0; i < num_threads; i++) {
+        pthread_create(&threads[i], NULL, thread1, NULL);
+    }
+    for (int i = 0; i < num_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
     printf("count = %d\n", count);
     return 0;
 }
