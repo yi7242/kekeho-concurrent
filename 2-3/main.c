@@ -15,61 +15,46 @@
 
 void *sendthread(void *arg)
 {
-    int sock0;
-    struct sockaddr_in addr;
-    struct sockaddr_in client;
-    int len;
     int sock;
+    struct sockaddr_in addr;
 
-    sock0 = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(*(int*)arg);
-    addr.sin_addr.s_addr = INADDR_ANY;
-    bind(sock0, (struct sockaddr *)&addr, sizeof(addr));
-    listen(sock0, 5);
-    printf("Waiting for connection\n");
-    len = sizeof(client);
-    sock = accept(sock0, (struct sockaddr *)&client, &len);
-    printf("Connected\n");
+    addr.sin_port = htons(*(int *)arg);
+    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     while (1)
     {
         char data[BUF_LEN];
         scanf("%s", data);
-        sendto(sock, data, BUF_LEN,0, (struct sockaddr *)&addr, sizeof(addr));
+        sendto(sock, data, BUF_LEN, 0, (struct sockaddr *)&addr, sizeof(addr));
     }
     close(sock);
-    close(sock0);
     return 0;
 }
 void *recvthread(void *arg)
-{   
-    int sock2;
-    struct sockaddr_in server;
+{
+    int sock;
+    struct sockaddr_in addr;
 
     char buf[BUF_LEN];
 
-    sock2 = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
 
-    server.sin_family = AF_INET;
-    server.sin_port = htons(*(int*)arg);
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    while (connect(sock2, (struct sockaddr *)&server, sizeof(server)) < 0)
-    {
-        printf("Waiting for connection\n");
-        sleep(1);
-    }
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(*(int *)arg);
+    addr.sin_addr.s_addr = INADDR_ANY;
+    bind(sock, (struct sockaddr *)&addr, sizeof(addr));
     while (1)
     {
         memset(buf, 0, sizeof(buf));
-        if (recv(sock2, buf, sizeof(buf), 0) < 0)
+        if (recv(sock, buf, sizeof(buf), 0) < 0)
         {
             perror("recv");
             exit(1);
         }
         printf("%s\n", buf);
     }
-    close(sock2);
 }
 int main(int argc, char *argv[])
 {
