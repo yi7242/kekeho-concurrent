@@ -2,6 +2,7 @@
     "files.associations": {
         "*.css": "css",
         "*.erb": "html",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "in.h": "c"
     }
 }

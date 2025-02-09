@@ -19,6 +19,7 @@ int main()
         char buf1[BUF_LEN] = "HELLO";
         int rc;
         rc = write(pipefd[1], buf1, BUF_LEN);
+        close(pipefd[1]);
         printf("Sent: %s\n", buf1);
         exit(0);
     }
